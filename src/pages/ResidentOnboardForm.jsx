@@ -83,9 +83,8 @@ export default function ResidentOnbordForm() {
                 setNotification({ type: 'error', message: 'Passwords don\'t match' });
                 return;
             }
-            const { data } = await api.post('/residents/register',
-                { ...formData }
-            );
+            
+            const { data } = await api.post('/residents/register',  { ...formData } );
 
             if (data.success) {
                 setNotification({ type: 'success', message: data.message || 'Submitted successfully!' });
