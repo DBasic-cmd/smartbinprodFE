@@ -128,118 +128,7 @@ const formatGenerationDate = (isoDateString) => {
 // Main Component - Renamed to ReportsPage
 const ReportsPage = () => {
     const [reports, setReports] = useState(
-        [
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "second bin report5",
-                "reportType": "bin",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T09:29:54.718499",
-                "id": "08ddb7b0-4a6c-45f5-865b-bf14a4e331ff",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "second bin report5",
-                "reportType": "bin",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T09:28:14.366719",
-                "id": "08ddb7b0-0e9d-4462-8625-a87b3433b480",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "second bin report4",
-                "reportType": "bin",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T09:27:14.578433",
-                "id": "08ddb7af-eb09-41f0-8afd-b9228df93505",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "Second waste report",
-                "reportType": "waste",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T09:25:40.457887",
-                "id": "08ddb7af-b2e1-441c-8bc2-92323caa48d0",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "Firast waste report",
-                "reportType": "waste",
-                "period": "Apr 25 - May 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T08:59:32.905317",
-                "id": "08ddb7ac-0c8b-4770-819e-3aef5766f80a",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "Smart bin report",
-                "reportType": "bin",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T00:52:57.319515",
-                "id": "08ddb768-129e-488d-813f-f07f654bfbff",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "second bin report3",
-                "reportType": "bin",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T00:51:09.109415",
-                "id": "08ddb767-d21e-47ba-8db3-e7e7daea83e4",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "second bin report2",
-                "reportType": "bin",
-                "period": "Apr 25 - Jun 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T00:48:48.5207",
-                "id": "08ddb767-7e52-4722-8b99-542e9ce8ffb5",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "second bin report",
-                "reportType": "bin",
-                "period": "Apr 25 - May 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-30T00:47:41.106245",
-                "id": "08ddb767-5624-4655-8ac2-199bff439f38",
-                "isDeleted": false
-            },
-            {
-                "residentID": null,
-                "customerName": "Boyega John",
-                "reportTitle": "First-Bin Report",
-                "reportType": "bin",
-                "period": "Apr 25 - May 25",
-                "requestBy": "Emmanuel Akanji",
-                "generationDate": "2025-06-29T19:43:46.8082",
-                "id": "08ddb73c-e1a6-4b36-8499-f8821c6a48aa",
-                "isDeleted": false
-            }
-        ]
+        []
     );
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -266,26 +155,40 @@ const ReportsPage = () => {
     const [newReportStartDate, setNewReportStartDate] = useState('');
     const [newReportEndDate, setNewReportEndDate] = useState('');
 
-    // const fetchReportsAPI = async() =>{
-    //     try {
-    //         const { data } = await api.get(`/AuditReport/my-report-logs`);
-    //         if(data.succeeded){
-    //             const reportList =data.data.data.map((item) => ({                    
-    //                 id : item.id,
-    //                 reportType : item.type,
-    //                 reportTitle : item.title,
-    //                 period : item.period,
-    //                 generationDate : item.generationDate
-    //             }
-    //             ));
-    //             setReports(reportList);
-    //         }
-    //     } catch (error) {
+    const fetchReportsAPI = async() =>{
+        try {
+            const params = new URLSearchParams();
+            if (filterReportType && filterReportType !== 'All') {
+                params.append('type', filterReportType.toLowerCase());
+            }
+            if (searchTerm) {
+                params.append('search', searchTerm);
+            }
+            if (filterDate) {
+                // Assuming filterDate is startDate, you might need to add endDate filter
+                params.append('startDate', filterDate);
+            }
+            params.append('page', '1'); // Default page, implement pagination later
+            params.append('limit', '10'); // Default limit
 
-    //     }
-    // }
+            const queryString = params.toString();
+            const url = `/facility-manager/reports${queryString ? `?${queryString}` : ''}`;
+            const { data } = await api.get(url);
+            if(data.success){
+                setReports(data.data.reports || []);
+                // Optionally set paging info if needed
+                // setPaging(data.data.paging);
+            } else {
+                console.error("Failed to fetch reports:", data.message);
+                setReports([]);
+            }
+        } catch (error) {
+            console.error("Error fetching reports:", error);
+            setReports([]);
+        }
+    }
     useEffect(() => {
-        // fetchReportsAPI();
+        fetchReportsAPI();
         setIsLoading(false);
     }, []);
 
